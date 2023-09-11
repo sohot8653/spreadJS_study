@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="SpreadJS\scripts\gc.spread.sheets.all.16.1.3.min.js"></script>
+    <script src="SpreadJS\scripts\resources\ko\gc.spread.sheets.resources.ko.16.1.3.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="SpreadJS\css\gc.spread.sheets.excel2013white.16.1.3.css"type="text/css"/>
+    <script>
+    window.onload = function () {
+        var spread = new GC.Spread.Sheets.Workbook(_getElementById('ss'));
+        var spreadNS = GC.Spread.Sheets;
+        spread.setSheetCount(3);
+        initSpread(spread);
+
+        spread.bind(spreadNS.Events.ActiveSheetChanged, function(e, args) {
+            _getElementById('activeSheetIndex').value = spread.getActiveSheetIndex();
+            _getElementById('changeSheetIndexName').value = spread.getActiveSheet().name();
+        });
+
+        _getElementById('btnAddSheet').addEventListener('click',function() {
+            var activeIndex = spread.getActiveSheetIndex(); 
+            if (activeIndex >= 0) {
+                spread.addSheet(activeIndex+1);
+                spread.setActiveSheetIndex(activeIndex+1);
+            }
+            else{
+                spread.addSheet(0);
+                spread.setActiveSheetIndex(0);
+            }
+        });
+
+        _getElementById('btnRemoveSheet').addEventListener('click',function() {
+            var activeIndex = spread.getActiveSheetIndex();
+            if (activeIndex >= 0) {
+                spread.removeSheet(activeIndex);
+                spread.setActiveSheetIndex(activeIndex);
+            }
+        });
+
+        _getElementById('btnClearSheets').addEventListener('click',function() {
+            spread.clearSheets();
+        });
+
+        _getElementById('btnSetActiveSheetIndex').addEventListener('click',function() {
+            var index = _getElementById('activeSheetIndex').value;
+            if (!isNaN(index)) {
+                index = parseInt(index);
+                if (0 <= index && index < spread.getSheetCount()) {
+                    spread.setActiveSheetIndex(index);
+                }
+            }
+        });
+        _getElementById('btnChangeSheetIndex').addEventListener('click',function() {
+            var sheetName = _getElementById('changeSheetIndexName').value;
+            var targetIndex = _getElementById('changeSheetIndexTargetIndex').value;
+            if (!isNaN(targetIndex)) {
+                targetIndex = parseInt(targetIndex);
+                if (0 <= targetIndex && targetIndex <= spread.getSheetCount()) {
+                    spread.changeSheetIndex(sheetName, targetIndex);
+                }
+            }
+        });
+    };
+
+    function initSpread(spread) {
+        console.log('spread', spread);
+    }
+
+    function _getElementById(id){
+        return document.getElementById(id);
+    } 
+    </script>
+    <style>
+        .sample-tutorial {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .sample-spreadsheets {
+            width: calc(100% - 280px);
+            height: 100%;
+            overflow: hidden;
+            float: left;
+        }
+
+        .options-container {
+            float: right;
+            width: 280px;
+            padding: 12px;
+            height: 100%;
+            box-sizing: border-box;
+            background: #fbfbfb;
+            overflow: auto;
+        }
+
+        .option-row {
+            font-size: 14px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 3px;
+            margin-top: 3px;
+        }
+
+        input {
+            padding: 4px 6px;
+        }
+
+        input[type=button] {
+            margin-top: 6px;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+        input[type=text] {
+            width: 230px;
+        }
+        body {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sample-tutorial">
+        <div id="ss" class="sample-spreadsheets"></div>
+        <div class="options-container">
+            <div class="option-row">
+                <label>Use the below buttons to add, remove or clear all sheets from the current workbook.</label>
+            </div>
+            <div class="option-row">
+                <input type="button" value="Add Sheet" id="btnAddSheet"/>
+                <input type="button" value="Remove Sheet" id="btnRemoveSheet"/>
+                <input type="button" value="Clear Sheets" id="btnClearSheets"/>
+            </div>
+            <div class="option-row">
+                <label>ActiveSheetIndex:</label>
+                <input type="text" id="activeSheetIndex" value="0"/>
+                <input type="button" id="btnSetActiveSheetIndex" value="Set"/>
+            </div>
+            <div class="option-row">
+                <label>This switches the currently active sheet to the sheet at the specified index.</label>
+            </div>
+            <div class="option-row">
+                <label>ChangeSheetIndex</label>
+                <label>Sheet Name:</label>
+                <input type="text" id="changeSheetIndexName" value="Sheet1"/>
+                <label>Target Index:</label>
+                <input type="text" id="changeSheetIndexTargetIndex" value="2"/>
+                <input type="button" id="btnChangeSheetIndex" value="Set"/>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
